@@ -1,0 +1,15 @@
+
+# Environment variables
+.env
+
+# Docker
+docker-compose.override.yml
+
+# WordPress
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/cache/
+
+# OS generated files
+.DS_Store
+Thumbs.db
