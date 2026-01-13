@@ -2,7 +2,7 @@ import Papa from 'papaparse';
 import type { Product } from '../types';
 
 // Placeholder URL - User needs to replace this with their published Sheet CSV link
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_PLACEHOLDER_ID/pub?output=csv';
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDGduXwmV7_HTN6yCoGVpNZz-WilPUBb4AVvzml-lm7CU1dqr7cgwvk6tZDhjtOHqd9mgk1tBARCNc/pub?output=csv';
 
 const MOCK_PRODUCTS: Product[] = [
     {
