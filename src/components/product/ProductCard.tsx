@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
-import { Product } from '../../types';
+import type { Product } from '../../types';
 
 interface ProductCardProps {
     product: Product;
@@ -21,7 +21,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
                     src={product.image}
                     alt={product.name}
                     className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                    isLoading="lazy"
+                    loading="lazy"
                 />
 
                 {/* Quick Add Overlay */}

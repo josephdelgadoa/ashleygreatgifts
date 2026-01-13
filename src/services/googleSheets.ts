@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import { Product } from '../types';
+import type { Product } from '../types';
 
 // Placeholder URL - User needs to replace this with their published Sheet CSV link
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_PLACEHOLDER_ID/pub?output=csv';
@@ -66,7 +66,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
         return new Promise((resolve, reject) => {
             Papa.parse(csvText, {
                 header: true,
-                complete: (results) => {
+                complete: (results: Papa.ParseResult<any>) => {
                     const products: Product[] = results.data
                         .filter((row: any) => row.id && row.name) // Filter empty rows
                         .map((row: any) => ({
@@ -81,7 +81,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
                         }));
                     resolve(products);
                 },
-                error: (error) => reject(error),
+                error: (error: any) => reject(error),
             });
         });
     } catch (error) {

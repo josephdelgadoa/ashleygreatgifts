@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { X, Trash2, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CartItem } from '../../types';
+import type { CartItem } from '../../types';
 
 interface CartDrawerProps {
     isOpen: boolean;
