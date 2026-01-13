@@ -80,7 +80,7 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (_id: string) => {
     alert("Deletion is currently only supported directly in the Google Sheet to prevent data misalignment.");
   };
 
