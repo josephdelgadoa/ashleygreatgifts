@@ -20,6 +20,7 @@ const MOCK_PRODUCTS: Product[] = [
         price: 189.00,
         category: 'Accessories',
         image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=800&auto=format&fit=crop',
+        colors: ['Brown', 'Black']
     },
     {
         id: '3',
@@ -34,6 +35,8 @@ const MOCK_PRODUCTS: Product[] = [
         price: 299.00,
         category: 'Men',
         image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800&auto=format&fit=crop',
+        sizes: ['M', 'L', 'XL'],
+        colors: ['Navy', 'Grey']
     },
     {
         id: '5',
@@ -41,6 +44,7 @@ const MOCK_PRODUCTS: Product[] = [
         price: 89.00,
         category: 'Accessories',
         image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?q=80&w=800&auto=format&fit=crop',
+        colors: ['Floral', 'Abstract']
     },
     {
         id: '6',
@@ -48,6 +52,39 @@ const MOCK_PRODUCTS: Product[] = [
         price: 129.00,
         category: 'Men',
         image: 'https://images.unsplash.com/photo-1521482819875-9c5c7cb1e5b4?q=80&w=800&auto=format&fit=crop',
+        sizes: ['S', 'M', 'L', 'XL']
+    },
+    {
+        id: '7',
+        name: 'Summer Linen Dress',
+        price: 159.00,
+        category: 'Women',
+        image: 'https://images.unsplash.com/photo-1596783076218-bc71dd220263?q=80&w=800&auto=format&fit=crop',
+        sizes: ['XS', 'S', 'M'],
+        colors: ['White', 'Sage']
+    },
+    {
+        id: '8',
+        name: 'Kids Cotton Tee Set',
+        price: 35.00,
+        category: 'Kids',
+        image: 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?q=80&w=800&auto=format&fit=crop',
+        sizes: ['2T', '4T', '6T']
+    },
+    {
+        id: '9',
+        name: 'Premium Leather Belt',
+        price: 55.00,
+        category: 'Accessories',
+        image: 'https://images.unsplash.com/photo-1551488852-d80429737887?q=80&w=800&auto=format&fit=crop',
+        colors: ['Brown', 'Black', 'Tan']
+    },
+    {
+        id: '10',
+        name: 'Aviator Sunglasses',
+        price: 110.00,
+        category: 'Accessories',
+        image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=800&auto=format&fit=crop',
     }
 ];
 
@@ -79,13 +116,24 @@ export const fetchProducts = async (): Promise<Product[]> => {
                             colors: row.colors ? row.colors.split(',') : [],
                             description: row.description
                         }));
-                    resolve(products);
+
+                    // Fallback to mock data if sheet is empty
+                    if (products.length === 0) {
+                        console.warn('Sheet empty. Using Mock Data.');
+                        resolve(MOCK_PRODUCTS);
+                    } else {
+                        resolve(products);
+                    }
                 },
-                error: (error: any) => reject(error),
+                error: (error: any) => {
+                    // resolve with mock data on parse error to keep site alive
+                    console.error('CSV Parse Error, using mock data:', error);
+                    resolve(MOCK_PRODUCTS);
+                },
             });
         });
     } catch (error) {
-        console.error('Error fetching/parsing products:', error);
-        return MOCK_PRODUCTS; // Fallback to mock data on error
+        console.error('Error fetching products, using mock data:', error);
+        return MOCK_PRODUCTS; // Fallback to mock data on network error
     }
 };
