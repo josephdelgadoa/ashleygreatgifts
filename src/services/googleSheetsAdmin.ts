@@ -13,7 +13,7 @@ export const initGoogleAuth = (callback: (token: string) => void) => {
         callback: (response: any) => {
             if (response.access_token) {
                 accessToken = response.access_token;
-                callback(accessToken);
+                if (accessToken) callback(accessToken);
             }
         },
     });
@@ -37,13 +37,14 @@ export const appendRow = async (spreadsheetId: string, rowData: any) => {
             rowData.price,
             rowData.category,
             rowData.image,
+            Array.isArray(rowData.images) ? rowData.images.join(',') : '', // Handle images array
             Array.isArray(rowData.sizes) ? rowData.sizes.join(',') : rowData.sizes,
             Array.isArray(rowData.colors) ? rowData.colors.join(',') : rowData.colors,
             rowData.description
         ]
     ];
 
-    const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A:H:append?valueInputOption=USER_ENTERED`, {
+    const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A:I:append?valueInputOption=USER_ENTERED`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -79,7 +80,7 @@ export const findRowIndex = async (spreadsheetId: string, productId: string) => 
 
 export const updateRow = async (spreadsheetId: string, rowIndex: number, rowData: any) => {
     if (!accessToken) throw new Error('No access token');
-    const range = `Sheet1!A${rowIndex + 1}:H${rowIndex + 1}`; // +1 because Sheet API is 1-based
+    const range = `Sheet1!A${rowIndex + 1}:I${rowIndex + 1}`; // +1 because Sheet API is 1-based
 
     const values = [
         [
@@ -88,6 +89,7 @@ export const updateRow = async (spreadsheetId: string, rowIndex: number, rowData
             rowData.price,
             rowData.category,
             rowData.image,
+            Array.isArray(rowData.images) ? rowData.images.join(',') : '',
             Array.isArray(rowData.sizes) ? rowData.sizes.join(',') : rowData.sizes,
             Array.isArray(rowData.colors) ? rowData.colors.join(',') : rowData.colors,
             rowData.description
@@ -112,7 +114,7 @@ export const updateRow = async (spreadsheetId: string, rowIndex: number, rowData
     return response.json();
 };
 
-export const deleteRow = async (spreadsheetId: string, rowIndex: number) => {
+export const deleteRow = async (_spreadsheetId: string, _rowIndex: number) => {
     if (!accessToken) throw new Error('No access token');
 
     // Note: Deleting rows shifts others up. This is complex with batchUpdate.
