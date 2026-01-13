@@ -100,7 +100,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
         if (!response.ok) throw new Error('Failed to fetch CSV');
         const csvText = await response.text();
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             Papa.parse(csvText, {
                 header: true,
                 complete: (results: Papa.ParseResult<any>) => {
