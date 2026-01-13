@@ -11,7 +11,7 @@ const MainContent: React.FC = () => {
 
   const handleCheckout = () => {
     // WhatsApp Logic construction
-    const phoneNumber = "15551234567"; // Replace with actual business number
+    const phoneNumber = "19547580512"; // Replace with actual business number
     const message = items.map(item =>
       `- ${item.name} (${item.quantity}) - $${item.price}` +
       (item.selectedSize ? ` [Size: ${item.selectedSize}]` : '')
