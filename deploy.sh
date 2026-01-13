@@ -2,35 +2,28 @@
 
 # Configuration
 SERVER="srv1229016.hstgr.cloud"
-USER="root"
+user="root"
 REMOTE_DIR="/root/ashleygreatgifts"
 REPO_URL="https://github.com/josephdelgadoa/ashleygreatgifts.git"
 
+# Deploy to VPS
 echo "Deploying to $SERVER..."
 
-# 1. Create directory on server if it doesn't exist
-echo "Ensuring remote directory exists..."
-ssh $USER@$SERVER "mkdir -p $REMOTE_DIR"
-
-# 2. Copy .env file (since it's not in git)
-echo "Copying .env file..."
-scp .env $USER@$SERVER:$REMOTE_DIR/.env
-
-# 3. Pull latest code and run docker-compose
-echo "Pulling latest code and restarting containers..."
-ssh $USER@$SERVER "
+ssh $user@$SERVER << EOF
+    # Create directory if it doesn't exist
+    mkdir -p $REMOTE_DIR
     cd $REMOTE_DIR
-    # Initialize git if not present (handles non-empty directory case)
+
+    # Initialize git if needed
     if [ ! -d .git ]; then
-        git init
-        git remote add origin $REPO_URL
-        git fetch origin
-        git checkout -t origin/main -f
+        git clone $REPO_URL .
     else
         git pull origin main
     fi
-    
-    # Try 'docker compose' first, fallback to 'docker-compose'
+
+    # Build and Start Containers
+    echo "Building and restarting containers..."
+    # We use 'docker compose' (v2) or fallback to docker-compose
     if command -v docker-compose &> /dev/null; then
         docker-compose down
         docker-compose up -d --build
@@ -38,6 +31,9 @@ ssh $USER@$SERVER "
         docker compose down
         docker compose up -d --build
     fi
-"
+
+    # Prune unused images to save space
+    docker image prune -f
+EOF
 
 echo "Deployment complete! Application should be running on port 8005."

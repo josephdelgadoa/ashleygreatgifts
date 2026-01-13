@@ -1,44 +1,9 @@
 services:
-  db:
-    image: mysql:8.0
-    container_name: ashley_db
+  frontend:
+    build: .
+    container_name: ashley_frontend
     restart: always
-    env_file: .env
-    environment:
-      - MYSQL_DATABASE=wordpress
-      - MYSQL_USER=wordpress
-      - MYSQL_PASSWORD=wordpress
-      - MYSQL_ROOT_PASSWORD=somesecretrootpassword
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - ashley_network
-
-  wordpress:
-    depends_on:
-      - db
-    image: wordpress:latest
-    container_name: ashley_wordpress
-    restart: always
-    env_file: .env
-    environment:
-      - WORDPRESS_DB_HOST=db:3306
-      - WORDPRESS_DB_USER=wordpress
-      - WORDPRESS_DB_PASSWORD=wordpress
-      - WORDPRESS_DB_NAME=wordpress
-      - WORDPRESS_CONFIG_EXTRA=define('WPLANG', 'es_ES'); define('WP_HOME', 'https://ashleygreatgifts.com'); define('WP_SITEURL', 'https://ashleygreatgifts.com'); if (isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') { $$_SERVER['HTTPS'] = 'on'; }
     ports:
       - "8005:80"
-    volumes:
-      - wp_data:/var/www/html
-      - ./themes/agg:/var/www/html/wp-content/themes/agg
-    networks:
-      - ashley_network
-
-volumes:
-  db_data:
-  wp_data:
-
-
-networks:
-  ashley_network:
+    environment:
+      - NODE_ENV=production
