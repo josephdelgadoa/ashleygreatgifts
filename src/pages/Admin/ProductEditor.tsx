@@ -14,7 +14,7 @@ export const ProductEditor: React.FC<ProductEditorProps> = ({ isOpen, onClose, p
         name: '',
         price: 0,
         category: '',
-        image: '',
+        images: [],
         sizes: [],
         colors: [],
         description: ''
@@ -28,7 +28,7 @@ export const ProductEditor: React.FC<ProductEditorProps> = ({ isOpen, onClose, p
                 name: '',
                 price: 0,
                 category: 'Women',
-                image: '',
+                images: [],
                 sizes: [],
                 colors: [],
                 description: ''
@@ -44,14 +44,42 @@ export const ProductEditor: React.FC<ProductEditorProps> = ({ isOpen, onClose, p
         onSave({
             ...formData,
             id: product?.id || crypto.randomUUID(), // Generate temp ID if new
-            price: Number(formData.price)
+            price: Number(formData.price),
+            // Ensure main image is set if images array has items
+            image: formData.images?.[0] || formData.image || ''
         } as Product);
         onClose();
     };
 
+    const handleAddImage = (url: string) => {
+        if (!url) return;
+        const currentImages = formData.images || [];
+        if (currentImages.length >= 5) return;
+        setFormData({
+            ...formData,
+            images: [...currentImages, url],
+            image: currentImages.length === 0 ? url : formData.image
+        });
+    };
+
+    const handleRemoveImage = (index: number) => {
+        const currentImages = formData.images || [];
+        const newImages = currentImages.filter((_, i) => i !== index);
+        setFormData({
+            ...formData,
+            images: newImages,
+            image: newImages[0] || ''
+        });
+    };
+
+    // Drag and drop mock handler (web-based file API requires upload storage backend)
+    // For now, we will assume user inputs URLs or drops image to get base64 (too large for sheet)
+    // Best approach for MVP: Input field that accepts multiple URLs.
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-fade-up">
+                {/* Header */}
                 <div className="flex justify-between items-center p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
                     <h2 className="text-xl font-serif font-bold text-primary">
                         {product ? 'Edit Product' : 'Add New Product'}
@@ -62,6 +90,7 @@ export const ProductEditor: React.FC<ProductEditorProps> = ({ isOpen, onClose, p
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                    {/* Main Info */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-700">Product Name</label>
@@ -98,16 +127,59 @@ export const ProductEditor: React.FC<ProductEditorProps> = ({ isOpen, onClose, p
                                 <option value="Jewelry">Jewelry</option>
                             </select>
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-700">Image URL</label>
-                            <input
-                                type="url"
-                                value={formData.image}
-                                onChange={e => setFormData({ ...formData, image: e.target.value })}
-                                placeholder="https://..."
-                                className="w-full p-2 border rounded focus:ring-2 focus:ring-primary/20 outline-none"
-                            />
+                    </div>
+
+                    {/* Image Management */}
+                    <div className="space-y-3">
+                        <label className="text-sm font-medium text-gray-700">Product Images (Max 5)</label>
+                        <div className="flex flex-wrap gap-4">
+                            {(formData.images || []).map((img, idx) => (
+                                <div key={idx} className="relative group w-24 h-24 border rounded overflow-hidden">
+                                    <img src={img} alt="Product" className="w-full h-full object-cover" />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveImage(idx)}
+                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                </div>
+                            ))}
+                            {(formData.images?.length || 0) < 5 && (
+                                <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center text-gray-400 hover:border-primary hover:text-primary transition-colors cursor-pointer relative">
+                                    <span className="text-xs text-center p-1">Add Image URL</span>
+                                    <input
+                                        type="text"
+                                        className="absolute inset-0 opacity-0 cursor-pointer"
+                                        onChange={(e) => {
+                                            if (e.target.value) {
+                                                handleAddImage(e.target.value);
+                                                e.target.value = '';
+                                            }
+                                        }}
+                                        onBlur={(e) => {
+                                            // Fallback if they type and click away
+                                            if (e.target.value) {
+                                                handleAddImage(e.target.value);
+                                                e.target.value = '';
+                                            }
+                                        }}
+                                    // Note: Simple prompt might be better UX than hidden input for URLs
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const url = prompt("Enter Image URL");
+                                            if (url) handleAddImage(url);
+                                        }}
+                                        className="absolute inset-0 z-10 w-full h-full"
+                                    />
+                                </div>
+                            )}
                         </div>
+                        <p className="text-xs text-gray-500">
+                            Click the box to add a URL. Drag & Drop upload requires Google Drive integration (coming soon).
+                        </p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
