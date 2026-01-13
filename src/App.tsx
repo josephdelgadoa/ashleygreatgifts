@@ -34,22 +34,46 @@ const MainContent: React.FC = () => {
         onCheckout={handleCheckout}
       />
 
-      <main className="pt-24 pb-12">
-        {/* Hero */}
-        <div className="container mx-auto px-4 mb-20 text-center animate-fade-up">
-          <h2 className="text-4xl md:text-6xl font-serif font-bold mb-6 text-primary">
-            Winter Collection 2026
-          </h2>
-          <p className="text-gray-600 max-w-xl mx-auto mb-8 text-lg font-light">
-            Discover the new standard of elegance. Minimalist designs curated for the modern lifestyle.
-          </p>
-          <button className="bg-primary text-white px-10 py-4 uppercase tracking-widest text-sm font-bold hover:bg-accent transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
-            Shop Now
-          </button>
+      <main className="">
+        {/* Hero Section */}
+        <div className="relative h-[80vh] w-full flex items-center justify-start overflow-hidden">
+          {/* Background Image */}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-105 animate-fade-up transition-transform duration-[2s]"
+            style={{
+              backgroundImage: 'url(/hero-bg.png)',
+              animation: 'none' // Override fade-up for bg to avoid flash
+            }}
+          />
+
+          {/* Gradient Overlay for Text Readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/40 to-transparent" />
+
+          {/* Content */}
+          <div className="relative z-10 container mx-auto px-4 md:px-8">
+            <div className="max-w-xl animate-fade-up">
+              <span className="inline-block text-accent font-bold tracking-[0.2em] uppercase text-sm mb-4">
+                New Season
+              </span>
+              <h2 className="text-5xl md:text-7xl font-serif font-bold mb-6 text-primary leading-tight">
+                Winter <br />
+                <span className="italic font-light">Elegance</span>
+              </h2>
+              <p className="text-gray-700 text-lg mb-8 font-light leading-relaxed max-w-md">
+                Discover the new standard of luxury. Minimalist designs curated for the modern lifestyle.
+              </p>
+              <button
+                onClick={() => window.scrollTo({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
+                className="bg-primary text-white px-10 py-4 uppercase tracking-widest text-sm font-bold hover:bg-accent transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+              >
+                Shop Collection
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Product Grid */}
-        <div className="container mx-auto px-4">
+        {/* Product Grid Container */}
+        <div className="container mx-auto px-4 py-20">
           <div className="flex justify-between items-end mb-8 border-b border-gray-100 pb-4">
             <h3 className="text-2xl font-serif font-bold">New Arrivals</h3>
             <a href="#" className="text-sm font-medium hover:text-accent">View All &rarr;</a>
