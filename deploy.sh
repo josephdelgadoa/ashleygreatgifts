@@ -3,7 +3,7 @@
 # Configuration
 SERVER="srv1229016.hstgr.cloud"
 USER="root"
-REMOTE_DIR="/var/www/ashleygreatgifts"
+REMOTE_DIR="/root/ashleygreatgifts"
 REPO_URL="https://github.com/josephdelgadoa/ashleygreatgifts.git"
 
 echo "Deploying to $SERVER..."
