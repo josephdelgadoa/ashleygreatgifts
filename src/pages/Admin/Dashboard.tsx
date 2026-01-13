@@ -76,7 +76,11 @@ export const AdminDashboard: React.FC = () => {
       }
     } catch (error: any) {
       console.error(error);
-      alert("Error saving to sheet: " + error.message);
+      if (error.message === 'Failed to fetch') {
+        alert("Network Error: Failed to fetch. \n\nThis is likely a CORS issue. Please ensuring your domain (https://ashleygreatgifts.com) is added to 'Authorized JavaScript origins' in Google Cloud Console.");
+      } else {
+        alert("Error saving to sheet: " + error.message);
+      }
     }
   };
 
