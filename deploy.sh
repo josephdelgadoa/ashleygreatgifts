@@ -20,13 +20,24 @@ scp .env $USER@$SERVER:$REMOTE_DIR/.env
 echo "Pulling latest code and restarting containers..."
 ssh $USER@$SERVER "
     cd $REMOTE_DIR
+    # Initialize git if not present (handles non-empty directory case)
     if [ ! -d .git ]; then
-        git clone $REPO_URL .
+        git init
+        git remote add origin $REPO_URL
+        git fetch origin
+        git checkout -t origin/main -f
     else
         git pull origin main
     fi
-    docker-compose down
-    docker-compose up -d --build
+    
+    # Try 'docker compose' first, fallback to 'docker-compose'
+    if command -v docker-compose &> /dev/null; then
+        docker-compose down
+        docker-compose up -d --build
+    else
+        docker compose down
+        docker compose up -d --build
+    fi
 "
 
 echo "Deployment complete! Application should be running on port 8005."
